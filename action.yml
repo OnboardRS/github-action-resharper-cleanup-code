@@ -17,7 +17,7 @@ runs:
     - name: ReSharper CLI CleanupCode - Execution
       shell: bash
       run: |
-        jb cleanupcode ${{ inputs.solutionName }}  --setting=${{ inputs.profilePath }}
+        jb cleanupcode ${{ inputs.solutionPath }}  --setting=${{ inputs.profilePath }}
     - name: ReSharper CLI CleanupCode - Git Status Check
       shell: bash
       run: |
