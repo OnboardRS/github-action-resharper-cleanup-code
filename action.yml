@@ -17,7 +17,7 @@ runs:
     - name: ReSharper CLI CleanupCode - Execution
       shell: bash
       run: |
-        jb cleanupcode ${{ inputs.solutionPath }}  --setting=${{ inputs.profilePath }}
+        jb cleanupcode ${{ inputs.solutionPath }} --setting=${{ inputs.profilePath }}
     - name: ReSharper CLI CleanupCode - Git Status Check
       shell: bash
       run: |
@@ -32,7 +32,7 @@ runs:
           echo "CLEANUP_CHANGES=narp" >> $GITHUB_ENV
         fi
     - name: Set GITHUB_TOKEN from parameter.
-      if: inputs.gitHubToken != ''
+      if: ${{ inputs.gitHubToken != '' }}
       shell: bash
       run: |
          echo "GITHUB_TOKEN=${{ inputs.gitHubToken }}" >> $GITHUB_ENV
