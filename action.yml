@@ -1,0 +1,49 @@
+name: 'ReSharper CLI CleanupCode'
+description: 'Runs the ReSharper CLI step and checks in changes if any.'
+inputs:
+  solutionPath:
+    required: true
+    description: 'The solution file.'
+  profilePath:
+    required: true
+    description: 'The DotSettings profile to run against the profiler.'
+  gitHubToken: 
+    required: false
+    description: 'The personal access token for github to check in with. Cannot be default PAT or checkin will not occur. Can set GITHUB_TOKEN instead.'
+    default: ''
+outputs:
+runs:
+  using: 'composite'
+  steps:
+    - name: ReSharper CLI CleanupCode - Execution
+      run: |
+        jb cleanupcode ${{ inputs.solutionName }}  --setting=${{ inputs.profilePath }}
+    - name: ReSharper CLI CleanupCode - Git Status Check
+      run: |
+        git status &> git_changes.txt
+    - name: ReSharper CLI CleanupCode - Modification Validation
+      run: |
+        if grep -Fq "modified:" git_changes.txt
+        then
+          echo "CLEANUP_CHANGES=yarp" >> $GITHUB_ENV
+        else
+          echo "CLEANUP_CHANGES=narp" >> $GITHUB_ENV
+        fi
+    - name: Set GITHUB_TOKEN from parameter.
+      if: inputs.gitHubToken != ''
+      run: |
+         echo "GITHUB_TOKEN=${{ inputs.gitHubToken }}" >> $GITHUB_ENV
+    - name: ReSharper CLI CleanupCode - Re-Commit Required
+      if: env.CLEANUP_CHANGES == 'yarp'
+      run: |
+        rm git_changes.txt
+        git config --global user.name "Build Action"
+        git config --global user.email "build@letsonboard.com"
+        git commit -am "Automated formatting changes."
+        git push
+        echo "Changes were applied, build exiting to restart with cleaned up code."
+        exit 1
+    - name: ReSharper CLI CleanupCode - No Changes
+      if: env.CLEANUP_CHANGES == 'narp'
+      run: |
+        echo "TODO: Need docker build and push etc. Keptn?"
