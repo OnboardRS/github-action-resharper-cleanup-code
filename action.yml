@@ -11,17 +11,19 @@ inputs:
     required: false
     description: 'The personal access token for github to check in with. Cannot be default PAT or checkin will not occur. Can set GITHUB_TOKEN instead.'
     default: ''
-outputs:
 runs:
   using: 'composite'
   steps:
     - name: ReSharper CLI CleanupCode - Execution
+      shell: bash
       run: |
         jb cleanupcode ${{ inputs.solutionName }}  --setting=${{ inputs.profilePath }}
     - name: ReSharper CLI CleanupCode - Git Status Check
+      shell: bash
       run: |
         git status &> git_changes.txt
     - name: ReSharper CLI CleanupCode - Modification Validation
+      shell: bash
       run: |
         if grep -Fq "modified:" git_changes.txt
         then
@@ -31,10 +33,12 @@ runs:
         fi
     - name: Set GITHUB_TOKEN from parameter.
       if: inputs.gitHubToken != ''
+      shell: bash
       run: |
          echo "GITHUB_TOKEN=${{ inputs.gitHubToken }}" >> $GITHUB_ENV
     - name: ReSharper CLI CleanupCode - Re-Commit Required
       if: env.CLEANUP_CHANGES == 'yarp'
+      shell: bash
       run: |
         rm git_changes.txt
         git config --global user.name "Build Action"
@@ -45,5 +49,6 @@ runs:
         exit 1
     - name: ReSharper CLI CleanupCode - No Changes
       if: env.CLEANUP_CHANGES == 'narp'
+      shell: bash
       run: |
         echo "TODO: Need docker build and push etc. Keptn?"
