@@ -10,6 +10,10 @@ inputs:
   gitHubToken: 
     required: true
     description: 'The personal access token for github to check in with. Cannot be default PAT or checkin will not occur.'
+outputs:
+    hadChanges: 
+      description: "Value for if the cleanup check had changes or not. yarp for true, narp for false. Case sensitive."
+      value: ${{ steps.resharper-cleanup-code-result.outputs.hadChanges }}
 runs:
   using: 'composite'
   steps:
@@ -49,4 +53,8 @@ runs:
       if: env.CLEANUP_CHANGES == 'narp'
       shell: bash
       run: |
-        echo "TODO: Need docker build and push etc. Keptn?"
+        echo "No changes detected."
+    - name: Set Outputs
+      shell: bash
+      run: |
+        echo "::set-output name=hadChanges::$(echo ${{env.CLEANUP_CHANGES}})"
