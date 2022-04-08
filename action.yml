@@ -8,9 +8,8 @@ inputs:
     required: true
     description: 'The DotSettings profile to run against the profiler.'
   gitHubToken: 
-    required: false
-    description: 'The personal access token for github to check in with. Cannot be default PAT or checkin will not occur. Can set GITHUB_TOKEN instead.'
-    default: ''
+    required: true
+    description: 'The personal access token for github to check in with. Cannot be default PAT or checkin will not occur.'
 runs:
   using: 'composite'
   steps:
@@ -32,7 +31,6 @@ runs:
           echo "CLEANUP_CHANGES=narp" >> $GITHUB_ENV
         fi
     - name: Set GITHUB_TOKEN from parameter.
-      if: ${{ inputs.gitHubToken != '' }}
       shell: bash
       run: |
          echo "GITHUB_TOKEN=${{ inputs.gitHubToken }}" >> $GITHUB_ENV
