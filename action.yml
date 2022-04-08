@@ -57,4 +57,4 @@ runs:
     - name: Set Outputs
       shell: bash
       run: |
-        echo "::set-output name=hadChanges::$(echo ${{env.CLEANUP_CHANGES}})"
+        echo "::set-output name=hadChanges::${{env.CLEANUP_CHANGES}}"
