@@ -10,6 +10,10 @@ inputs:
   gitHubToken: 
     required: true
     description: 'The personal access token for github to check in with. Cannot be default PAT or checkin will not occur.'
+  defaultTimeOutInMinutes:
+    required: false
+    description: 'Timeout for the step to prevent hanging.'
+    default: 5
 outputs:
     hadChanges: 
       description: "Value for if the cleanup check had changes or not. yarp for true, narp for false. Case sensitive."
@@ -18,6 +22,7 @@ runs:
   using: 'composite'
   steps:
     - name: ReSharper CLI CleanupCode - Execution
+      timeout-minutes: ${{ inputs.defaultTimeOutInMinutes }}
       shell: bash
       run: |
         jb cleanupcode ${{ inputs.solutionPath }} --setting=${{ inputs.profilePath }}
