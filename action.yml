@@ -35,19 +35,19 @@ runs:
         echo "Modified lines: $linesModified"
         if test $linesModified -gt 0
         then
-          export CLEANUP_CHANGES=yarp
-          echo "CLEANUP_CHANGES=yarp" >> $GITHUB_ENV
+          export CODE_CLEANUP_CHANGES=yarp
+          echo "CODE_CLEANUP_CHANGES=yarp" >> $GITHUB_ENV
         else
-          export CLEANUP_CHANGES=narp
-          echo "CLEANUP_CHANGES=narp" >> $GITHUB_ENV
+          export CODE_CLEANUP_CHANGES=narp
+          echo "CODE_CLEANUP_CHANGES=narp" >> $GITHUB_ENV
         fi
-        echo "CLEANUP_CHANGES: $CLEANUP_CHANGES"
+        echo "CODE_CLEANUP_CHANGES: $CODE_CLEANUP_CHANGES"
     - name: Set GITHUB_TOKEN from parameter.
       shell: bash
       run: |
          echo "GITHUB_TOKEN=${{ inputs.gitHubToken }}" >> $GITHUB_ENV
     - name: ReSharper CLI CleanupCode - Re-Commit Required
-      if: env.CLEANUP_CHANGES == 'yarp'
+      if: env.CODE_CLEANUP_CHANGES == 'yarp'
       shell: bash
       run: |
         rm git_changes.txt
@@ -57,11 +57,11 @@ runs:
         git push
         echo "Changes were applied, build exiting to restart with cleaned up code."
     - name: ReSharper CLI CleanupCode - No Changes
-      if: env.CLEANUP_CHANGES == 'narp'
+      if: env.CODE_CLEANUP_CHANGES == 'narp'
       shell: bash
       run: |
         echo "No changes detected."
     - name: Set Outputs
       shell: bash
       run: |
-        echo "::set-output name=hadChanges::${{env.CLEANUP_CHANGES}}"
+        echo "::set-output name=hadChanges::${{env.CODE_CLEANUP_CHANGES}}"
