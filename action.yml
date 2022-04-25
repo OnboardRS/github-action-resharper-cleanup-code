@@ -28,7 +28,11 @@ runs:
     - name: ReSharper CLI CleanupCode - Modification Validation
       shell: bash
       run: |
-        if grep -Fq "modified:" git_changes.txt
+        echo "Start Changes"
+        cat git_changes.txt
+        echo "End Changes"
+        export linesModified=$(grep "modified:" git_changes.txt | wc -l)
+        if test $linesModified -gt 0
         then
           echo "CLEANUP_CHANGES=yarp" >> $GITHUB_ENV
         else
