@@ -51,7 +51,7 @@ runs:
       shell: bash
       run: |
         rm git_changes.txt
-        git reset -- nuget.config
+        git checkout -- nuget.config
         git config --global user.name "Build Action"
         git config --global user.email "build@letsonboard.com"
         git commit -am "Automated formatting changes."
