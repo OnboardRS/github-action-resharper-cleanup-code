@@ -24,7 +24,7 @@ runs:
     - name: ReSharper CLI CleanupCode - Git Status Check
       shell: bash
       run: |
-        git reset --hard HEAD -- nuget.config
+        git checkout HEAD -- nuget.config
         git status &> git_changes.txt
         echo "------------------------------------ Start Of git_changes.txt -----------------"
         cat git_changes.txt
