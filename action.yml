@@ -24,7 +24,12 @@ runs:
     - name: ReSharper CLI CleanupCode - Git Status Check
       shell: bash
       run: |
+        echo "Cleaning up leftover artifacts and things that should not be committed."
         git checkout HEAD -- nuget.config
+        git checkout HEAD -- .editorconfig        
+        if [ -f ./result.xml ]; then rm -Rf ./result.xml; fi
+        if [ -d ./coding-standards ]; then rm -Rf ./coding-standards; fi
+
         git status &> git_changes.txt
         echo "------------------------------------ Start Of git_changes.txt -----------------"
         cat git_changes.txt
@@ -55,8 +60,9 @@ runs:
        
         git config --global user.name "Build Action"
         git config --global user.email "build@letsonboard.com"
+        git add -u
         git commit -am "Automated formatting changes."
-        
+        git push
         echo "Changes were applied."
     - name: ReSharper CLI CleanupCode - No Changes
       if: env.CODE_CLEANUP_CHANGES == 'narp'
