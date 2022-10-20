@@ -72,4 +72,4 @@ runs:
     - name: Set Outputs
       shell: bash
       run: |
-        echo "::set-output name=hadChanges::${{env.CODE_CLEANUP_CHANGES}}"
+        echo "hadChanges=${{env.CODE_CLEANUP_CHANGES}}" >> $GITHUB_OUTPUT
